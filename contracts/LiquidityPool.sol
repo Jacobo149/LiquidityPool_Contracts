@@ -8,7 +8,6 @@ import "./TokenB.sol";
 
 contract LiquidityPool {
 
-    // TODO: May Need A Mapping to keep track of how many coins each account has
 
     // Tokens
     TokenA public tokenA;
@@ -18,8 +17,8 @@ contract LiquidityPool {
     mapping(address => uint) public balanceOf;
 
     // Pool Variables
-    uint TokenAStaked;
-    uint TokenBStaked;
+    //uint TokenAStaked;
+    //uint TokenBStaked;
     uint TokenATotal;
     uint TokenBTotal;
 
@@ -30,7 +29,7 @@ contract LiquidityPool {
     }
     
     // Add Liquidity to Pool
-    function addLiquidity(uint _amountA, uint _amountB) {
+    function addLiquidity(uint _amountA, uint _amountB) public {
         // Transfer Tokens to Pool
         tokenA.transferFrom(msg.sender, address(this), _amountA);
         tokenB.transferFrom(msg.sender, address(this), _amountB);
@@ -43,13 +42,42 @@ contract LiquidityPool {
         balanceOf[msg.sender] += _amountA + _amountB;
     }
 
-    // Mint Tokens to Account
+    // Remove Liquidity from Pool
+    // Remove Liquidity from Pool
+    function removeLiquidity(uint _amount) public {
+        require(balanceOf[msg.sender] >= _amount, "Insufficient balance");
 
-    // Stake Tokens
+        // Continue with the rest of the function
+        balanceOf[msg.sender] -= _amount;
+        // Assume pool has enough tokens to cover the amount (Because the amount in is the exact amount out)
+        // Make dynamic in future
+        tokenA.transfer(msg.sender, _amount);
+        tokenB.transfer(msg.sender, _amount);
+    }
 
     // Swap TokenA for TokenB
+    function SwapAforB(uint _amount) public {
+        // Transfer Tokens to Pool
+        tokenA.transferFrom(msg.sender, address(this), _amount);
 
-    // Swap TokenB for TokenA
+        TokenATotal += _amount;
 
+        // Transfer Tokens to User
+        tokenB.transfer(msg.sender, _amount);
+
+        TokenBTotal -= _amount;
+    }
+
+    function SwapBforA(uint _amount) public {
+        // Transfer Tokens to Pool
+        tokenB.transferFrom(msg.sender, address(this), _amount);
+
+        TokenBTotal += _amount;
+
+        // Transfer Tokens to User
+        tokenA.transfer(msg.sender, _amount);
+
+        TokenATotal -= _amount;
+    }
     
 }
