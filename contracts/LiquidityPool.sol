@@ -14,7 +14,7 @@ contract LiquidityPool {
     TokenB public tokenB;
 
     // Liquidity Tokens
-    mapping(address => uint) public balanceOf;
+    mapping(address => uint) public liquidity;
 
     // Pool Variables
     //uint TokenAStaked;
@@ -41,15 +41,15 @@ contract LiquidityPool {
         TokenBTotal += _amountB;
 
         // Mint Liquidity Tokens
-        balanceOf[msg.sender] += _amountA + _amountB;
+        liquidity[msg.sender] += _amountA + _amountB;
     }
 
     // Remove Liquidity from Pool
     function removeLiquidity(uint _amount) public {
-        require(balanceOf[msg.sender] >= _amount, "Insufficient balance");
+        require(liquidity[msg.sender] >= _amount, "Insufficient balance");
 
         // Continue with the rest of the function
-        balanceOf[msg.sender] -= _amount;
+        liquidity[msg.sender] -= _amount * 2;
 
         // Update Pool Variables
         require(TokenATotal >= _amount, "Insufficient TokenA in Pool");
