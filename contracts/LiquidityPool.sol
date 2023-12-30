@@ -31,6 +31,8 @@ contract LiquidityPool {
     // Add Liquidity to Pool
     function addLiquidity(uint _amountA, uint _amountB) public {
         // Transfer Tokens to Pool
+        require(tokenA.balanceOf(msg.sender) >= _amountA, "Insufficient TokenA Balance");
+        require(tokenB.balanceOf(msg.sender) >= _amountB, "Insufficient TokenB Balance");
         tokenA.transferFrom(msg.sender, address(this), _amountA);
         tokenB.transferFrom(msg.sender, address(this), _amountB);
 
@@ -43,41 +45,51 @@ contract LiquidityPool {
     }
 
     // Remove Liquidity from Pool
-    // Remove Liquidity from Pool
     function removeLiquidity(uint _amount) public {
         require(balanceOf[msg.sender] >= _amount, "Insufficient balance");
 
         // Continue with the rest of the function
         balanceOf[msg.sender] -= _amount;
-        // Assume pool has enough tokens to cover the amount (Because the amount in is the exact amount out)
-        // Make dynamic in future
+
+        // Update Pool Variables
+        require(TokenATotal >= _amount, "Insufficient TokenA in Pool");
+        require(TokenBTotal >= _amount, "Insufficient TokenB in Pool");
         tokenA.transfer(msg.sender, _amount);
         tokenB.transfer(msg.sender, _amount);
     }
 
     // Swap TokenA for TokenB
     function SwapAforB(uint _amount) public {
+        require(tokenA.balanceOf(msg.sender) >= _amount, "Insufficient TokenA Balance");
+        require(TokenATotal >= _amount, "Insufficient TokenA in Pool");
+
+        TokenATotal += _amount;
+
         // Transfer Tokens to Pool
         tokenA.transferFrom(msg.sender, address(this), _amount);
 
-        TokenATotal += _amount;
+        TokenBTotal -= _amount;
 
         // Transfer Tokens to User
         tokenB.transfer(msg.sender, _amount);
 
-        TokenBTotal -= _amount;
     }
 
     function SwapBforA(uint _amount) public {
+        require(tokenB.balanceOf(msg.sender) >= _amount, "Insufficient TokenB Balance");
+        require(TokenBTotal >= _amount, "Insufficient TokenB in Pool");
+
+        TokenBTotal += _amount;
+
         // Transfer Tokens to Pool
         tokenB.transferFrom(msg.sender, address(this), _amount);
 
-        TokenBTotal += _amount;
+
+        TokenATotal -= _amount;
 
         // Transfer Tokens to User
         tokenA.transfer(msg.sender, _amount);
 
-        TokenATotal -= _amount;
     }
     
 }
