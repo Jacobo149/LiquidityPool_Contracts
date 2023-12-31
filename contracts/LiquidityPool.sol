@@ -16,6 +16,12 @@ contract LiquidityPool {
     // Liquidity Tokens
     mapping(address => uint) public liquidity;
 
+    // Events
+    event AddLiquidity(address indexed user, uint amountA, uint amountB);
+    event RemoveLiquidity(address indexed user, uint amountA, uint amountB);
+    event SwapAforB(address indexed user, uint amountA, uint amountB);
+    event SwapBforA(address indexed user, uint amountA, uint amountB);
+
     // Pool Variables
     //uint TokenAStaked;
     //uint TokenBStaked;
@@ -30,9 +36,12 @@ contract LiquidityPool {
     
     // Add Liquidity to Pool
     function addLiquidity(uint _amountA, uint _amountB) public {
-        // Transfer Tokens to Pool
+        // Check for correct user amounts
         require(tokenA.balanceOf(msg.sender) >= _amountA, "Insufficient TokenA Balance");
+
         require(tokenB.balanceOf(msg.sender) >= _amountB, "Insufficient TokenB Balance");
+
+        // Transfer Tokens to Pool
         tokenA.transferFrom(msg.sender, address(this), _amountA);
         tokenB.transferFrom(msg.sender, address(this), _amountB);
 
@@ -42,11 +51,14 @@ contract LiquidityPool {
 
         // Mint Liquidity Tokens
         liquidity[msg.sender] += _amountA + _amountB;
+
+        emit AddLiquidity(msg.sender, _amountA, _amountB);
     }
 
     // Remove Liquidity from Pool
     function removeLiquidity(uint _amount) public {
         require(liquidity[msg.sender] >= _amount, "Insufficient balance");
+        
 
         // Continue with the rest of the function
         liquidity[msg.sender] -= _amount * 2;
@@ -56,6 +68,8 @@ contract LiquidityPool {
         require(TokenBTotal >= _amount, "Insufficient TokenB in Pool");
         tokenA.transfer(msg.sender, _amount);
         tokenB.transfer(msg.sender, _amount);
+
+        emit RemoveLiquidity(msg.sender, _amount, _amount);
     }
 
     // Swap TokenA for TokenB
@@ -73,6 +87,7 @@ contract LiquidityPool {
         // Transfer Tokens to User
         tokenB.transfer(msg.sender, _amount);
 
+        emit SwapAforB(msg.sender, _amount, _amount);
     }
 
     function SwapBforA(uint _amount) public {
@@ -90,6 +105,7 @@ contract LiquidityPool {
         // Transfer Tokens to User
         tokenA.transfer(msg.sender, _amount);
 
+        emit SwapBforA(msg.sender, _amount, _amount);
     }
     
 }
