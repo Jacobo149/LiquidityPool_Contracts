@@ -1,7 +1,6 @@
 # LiquidityPool_Contracts
 
 ### TODO
-Add Staking
 Add interest on stake
 Make it behave like a market (random maybe?)
     Change event parameters

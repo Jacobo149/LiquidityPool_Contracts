@@ -23,8 +23,8 @@ contract LiquidityPool {
     event SwapBforA(address indexed user, uint amountA, uint amountB);
 
     // Pool Variables
-    //uint TokenAStaked;
-    //uint TokenBStaked;
+    uint TokenAStaked;
+    uint TokenBStaked;
     uint TokenATotal;
     uint TokenBTotal;
 
@@ -107,5 +107,35 @@ contract LiquidityPool {
 
         emit SwapBforA(msg.sender, _amount, _amount);
     }
+
+    function stakeTokenA(uint _amount) public {
+        require(tokenA.balanceOf(msg.sender) >= _amount, "Insufficient TokenA Balance");
+
+        TokenATotal += _amount;
+        TokenAStaked += _amount;
+
+        tokenA.transferFrom(msg.sender, address(this), _amount);
+
+    }
+
+    function stakeTokenB(uint _amount) public {
+        require(tokenB.balanceOf(msg.sender) >= _amount, "Insufficient TokenB Balance");
+
+        TokenBTotal += _amount;
+        TokenBStaked += _amount;
+
+        tokenB.transferFrom(msg.sender, address(this), _amount);
+
+    }
+
+    // Get Pool Variables
+    function getPool() public view returns(uint, uint) {
+        return (TokenATotal, TokenBTotal);
+    }
     
+    // Get Liquidity Tokens
+    function getLiquidity(address _user) public view returns(uint) {
+        return liquidity[_user];
+    }
+
 }
