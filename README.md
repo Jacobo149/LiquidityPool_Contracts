@@ -10,6 +10,4 @@ Ensure you compile and deploy token contracts (TokenA, TokenB) before the liquid
 Add approve() on staking for security  
 Add Error events for error feedback on the Dapp client  
 Add interest on stake  
-Make it behave like a market (random maybe?)  
-    Change event parameters  
-    Change Balances withdrawn
+Market behavior for tokens
