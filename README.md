@@ -53,6 +53,6 @@ Ensure you compile and deploy token contracts (TokenA, TokenB) before the liquid
 
 
 ## Current TODO
-Make Liquidity Token ERC20
-Add Error events for error feedback on the Dapp client  
+Make Liquidity Token ERC20  
+Add Error events for error feedback on the Dapp client   
 Market behavior for tokens
